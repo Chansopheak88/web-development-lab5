@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page B</title>
+</head>
+<body>
+  <h2>Page B</h2>
+
+  <script>
+    // Redirect Page A to Page C
+    if (window.opener) {
+      window.opener.location = "pageC.html";
+    }
+  </script>
+
+</body>
+</html>

